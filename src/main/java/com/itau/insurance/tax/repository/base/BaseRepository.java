@@ -14,10 +14,8 @@ import java.io.EOFException;
 public abstract class BaseRepository<T extends BaseEntity, I extends BaseId> {
 
     protected final Logger logger = LoggerFactory.getLogger(this.getClass());
-    @SneakyThrows
+
     public T save(T entity){
-        System.out.printf("Avua bruxo");
-        throw new EOFException("");
-//        return null;
+        return null;
     }
 }

@@ -1,11 +1,9 @@
 package com.itau.insurance.tax.controller;
 
-import com.itau.insurance.tax.controller.base.BaseController;
 import com.itau.insurance.tax.entity.ProductTaxEntity;
-import com.itau.insurance.tax.entity.id.base.ProductTaxId;
 import com.itau.insurance.tax.model.ProductTaxModel;
-import com.itau.insurance.tax.repository.ProductTaxRepository;
 import com.itau.insurance.tax.service.ProductTaxService;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -13,6 +11,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+@Slf4j
 @RestController
 @RequestMapping("product")
 public class ProductTaxController {
@@ -24,6 +23,8 @@ public class ProductTaxController {
 
     @PostMapping
     public ResponseEntity<ProductTaxModel> post(@RequestBody ProductTaxModel requestBody){
+
+        log.info("Posting new product");
 
         requestBody.isValid();
 
