@@ -1,0 +1,3 @@
+server:
+  servlet:
+    context-path: /insurance/tax/v1/
