@@ -1,6 +1,5 @@
-package tax.controller;
+package com.itau.insurance.tax.controller;
 
-import com.itau.insurance.tax.controller.ProductTaxController;
 import com.itau.insurance.tax.model.ProductTaxModel;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;

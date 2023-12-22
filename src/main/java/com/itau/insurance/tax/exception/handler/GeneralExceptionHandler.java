@@ -7,9 +7,10 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.ExceptionHandler;
+import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 
-//@Slf4j
+@Slf4j
 @RestControllerAdvice
 class GeneralExceptionHandler {
 
@@ -25,10 +26,10 @@ class GeneralExceptionHandler {
                 new MessageError(e.getMessage()), HttpStatus.NOT_FOUND);
     }
 
-    @ExceptionHandler(value = Exception.class)
+    @ExceptionHandler
     public ResponseEntity<MessageError> generalExceptionHandler(Exception e){
 
-//        log.error(e.getMessage());
+        log.error("Not mapped error: " + e.getMessage());
 
         return new ResponseEntity<>(
                 new MessageError(e.getMessage()), HttpStatus.INTERNAL_SERVER_ERROR);

@@ -4,6 +4,8 @@ import com.itau.insurance.tax.entity.ProductTaxEntity;
 import com.itau.insurance.tax.entity.id.base.ProductTaxId;
 import com.itau.insurance.tax.repository.ProductTaxRepository;
 import com.itau.insurance.tax.service.base.BaseService;
+import org.springframework.stereotype.Service;
 
+@Service
 public class ProductTaxService extends BaseService<ProductTaxEntity, ProductTaxId, ProductTaxRepository> {
 }
