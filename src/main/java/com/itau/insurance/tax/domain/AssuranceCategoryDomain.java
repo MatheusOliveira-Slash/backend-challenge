@@ -1,10 +1,12 @@
 package com.itau.insurance.tax.domain;
 
 import com.itau.insurance.tax.exception.BadRequestException;
+import lombok.Getter;
 import lombok.SneakyThrows;
 
 import java.util.Arrays;
 
+@Getter
 public enum AssuranceCategoryDomain {
     LIFE("VIDA"),
     AUTO("AUTO"),

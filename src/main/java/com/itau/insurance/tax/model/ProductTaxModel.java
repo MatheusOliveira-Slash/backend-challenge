@@ -40,7 +40,7 @@ public class ProductTaxModel implements BaseModel<ProductTaxEntity> {
 
         setNome(entity.getName());
         setPreco_base(entity.getBase_value());
-        setCategoria(entity.getCategory().name());
+        setCategoria(entity.getCategory().getValue());
 
         return this;
     }
