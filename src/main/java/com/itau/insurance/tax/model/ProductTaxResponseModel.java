@@ -36,8 +36,9 @@ public class ProductTaxResponseModel extends ProductTaxModel {
     public BaseModel fromEntity(ProductTaxEntity entity) {
 
         ProductTaxResponseModel response = (ProductTaxResponseModel) super.fromEntity(entity);
-        response.setId(getId());
-        response.setPreco_tarifado(getPreco_tarifado());
+
+        response.setId(entity.getId());
+        response.setPreco_tarifado(entity.getActual_value());
 
         return response;
     }
