@@ -16,8 +16,6 @@ import java.math.BigDecimal;
 
 public abstract class BaseRepository<T extends BaseEntity, I extends BaseId> {
 
-    protected final Logger logger = LoggerFactory.getLogger(this.getClass());
-
     public T save(T entity){
         return (T) new ProductTaxEntity("id", "nome", AssuranceCategoryDomain.LIFE, BigDecimal.valueOf(1.0), BigDecimal.valueOf(1.1));
     }
