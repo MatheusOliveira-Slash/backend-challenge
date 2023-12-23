@@ -4,8 +4,6 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import com.itau.insurance.tax.domain.AssuranceCategoryDomain;
 import com.itau.insurance.tax.entity.ProductTaxEntity;
 import com.itau.insurance.tax.model.base.BaseModel;
-import jakarta.validation.constraints.DecimalMin;
-import jakarta.validation.constraints.NotBlank;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -15,33 +13,32 @@ import java.math.BigDecimal;
 @Getter
 @Setter
 @NoArgsConstructor
-public class ProductTaxModel implements BaseModel<ProductTaxEntity> {
+public class ProductTaxResponseModel extends ProductTaxModel {
 
-    @NotBlank
-    private String nome;
+    private String id;
 
-    @NotBlank
-    private String categoria;
+    private BigDecimal preco_tarifado;
 
-    @DecimalMin("0.0")
-    private BigDecimal preco_base;
-
+    @Override
     public ProductTaxEntity toEntity() {
         ProductTaxEntity entity =  new ProductTaxEntity();
 
         entity.setName(getNome());
         entity.setBase_value(getPreco_base());
         entity.setCategory(AssuranceCategoryDomain.fromValue(getCategoria()));
+        entity.setId(getId());
+        entity.setActual_value(getPreco_tarifado());
 
         return entity;
     }
 
+    @Override
     public BaseModel fromEntity(ProductTaxEntity entity) {
 
-        setNome(entity.getName());
-        setPreco_base(entity.getBase_value());
-        setCategoria(entity.getCategory().name());
+        ProductTaxResponseModel response = (ProductTaxResponseModel) super.fromEntity(entity);
+        response.setId(getId());
+        response.setPreco_tarifado(getPreco_tarifado());
 
-        return this;
+        return response;
     }
 }

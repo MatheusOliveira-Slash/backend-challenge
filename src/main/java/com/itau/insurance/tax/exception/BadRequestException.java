@@ -1,5 +1,8 @@
 package com.itau.insurance.tax.exception;
 
+import lombok.Getter;
+
+@Getter
 public class BadRequestException extends Exception {
     private final String key;
 

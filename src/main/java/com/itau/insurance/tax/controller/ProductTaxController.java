@@ -3,6 +3,7 @@ package com.itau.insurance.tax.controller;
 import com.itau.insurance.tax.entity.ProductTaxEntity;
 import com.itau.insurance.tax.model.ProductTaxModel;
 import com.itau.insurance.tax.service.ProductTaxService;
+import jakarta.validation.Valid;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -22,11 +23,9 @@ public class ProductTaxController {
     }
 
     @PostMapping
-    public ResponseEntity<ProductTaxModel> post(@RequestBody ProductTaxModel requestBody){
+    public ResponseEntity<ProductTaxModel> post(@Valid @RequestBody ProductTaxModel requestBody){
 
         log.info("Posting new product");
-
-        requestBody.isValid();
 
         ProductTaxEntity response = service.post(requestBody.toEntity());
         requestBody = (ProductTaxModel) requestBody.fromEntity(response);
