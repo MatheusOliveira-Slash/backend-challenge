@@ -28,7 +28,7 @@ public class ProductTaxResponseModel extends ProductTaxModel {
 
         entity.setName(getNome());
         entity.setBaseValue(getPrecoBase());
-        entity.setId(new ProductTaxId(UUID.fromString(getId())));
+        entity.setId(new ProductTaxId(getId()));
         entity.setActualValue(getPrecoTarifado());
         entity.setCategory(AssuranceCategoryTaxDomain.fromValue(getCategoria()));
 

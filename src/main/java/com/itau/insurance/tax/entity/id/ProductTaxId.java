@@ -15,10 +15,13 @@ import java.util.UUID;
 @Setter
 @Embeddable
 @NoArgsConstructor
-@AllArgsConstructor
 public class ProductTaxId extends BaseId {
 
     @GeneratedValue(strategy = GenerationType.UUID)
     UUID id;
 
+    public ProductTaxId(String id) {
+        super();
+        this.id = UUID.fromString(id);
+    }
 }

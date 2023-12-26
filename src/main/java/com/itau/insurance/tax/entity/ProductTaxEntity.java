@@ -3,13 +3,12 @@ package com.itau.insurance.tax.entity;
 import com.itau.insurance.tax.domain.AssuranceCategoryTaxDomain;
 import com.itau.insurance.tax.entity.base.BaseEntity;
 import com.itau.insurance.tax.entity.id.ProductTaxId;
+import com.itau.insurance.tax.exception.BadRequestException;
 import jakarta.persistence.Entity;
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import lombok.*;
 
 import java.math.BigDecimal;
+import java.util.Map;
 
 @Getter
 @Setter
@@ -35,4 +34,27 @@ public class ProductTaxEntity extends BaseEntity<ProductTaxId> {
 
         return category.calculateActualValue(baseValue);
     }
+
+    @SneakyThrows
+    @Override
+    public void patch(Map<String, Object> updates) {
+
+        try {
+
+            if (updates.containsKey("nome"))
+                this.name = (String) updates.get("nome");
+
+            if (updates.containsKey("preco_base"))
+                this.baseValue = BigDecimal.valueOf((Float) updates.get("preco_base"));
+
+            if (updates.containsKey("categoria"))
+                this.category = AssuranceCategoryTaxDomain.valueOf((String) updates.get("categoria"));
+
+        } catch (Exception e){
+            throw new BadRequestException("Erro ao parsear atualizações", "");
+        }
+
+    }
+
+
 }
