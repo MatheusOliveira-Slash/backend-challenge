@@ -17,7 +17,6 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
-import java.util.UUID;
 import java.util.stream.Collectors;
 
 @Slf4j
@@ -44,13 +43,15 @@ public class ProductTaxController {
 
     @SneakyThrows
     @GetMapping("/{id}")
-    public ResponseEntity<BaseModel> get(@PathVariable("id") String id) {
-        log.info("Fetching product with id: {}", id);
+    public ResponseEntity<BaseModel> get(@PathVariable("id") String requestId) {
+        log.info("Fetching product with id: {}", requestId);
 
-        Optional<ProductTaxEntity> entityResponse = service.findById(new ProductTaxId(id));
+        ProductTaxId id = new ProductTaxId(requestId);
+
+        Optional<ProductTaxEntity> entityResponse = service.findById(id);
 
         if(!entityResponse.isPresent()) {
-            throw new NotFoundException("Record not found for id: " + id);
+            throw new NotFoundException("Record not found",  id.toString());
         }
 
         return ResponseEntity.ok(
@@ -65,6 +66,8 @@ public class ProductTaxController {
 
         ProductTaxEntity entityResponse = service.post(requestBody.toEntity());
 
+        log.info("Product posted: " + entityResponse.getId().getId());
+
         return ResponseEntity.status(HttpStatus.CREATED)
                 .body(new ProductTaxResponseModel().fromEntity(entityResponse));
 
@@ -75,6 +78,8 @@ public class ProductTaxController {
         log.info("Updating product with id: {}", id);
 
         ProductTaxEntity entityResponse = service.insertOrUpdate(new ProductTaxId(id), requestBody.toEntity());
+
+        log.info("Product updated: {}", id);
 
         return ResponseEntity.ok(
                 new ProductTaxResponseModel().fromEntity(entityResponse));
@@ -88,6 +93,8 @@ public class ProductTaxController {
         ProductTaxEntity entityResponse = service.update(new ProductTaxId(id), updates);
         ProductTaxResponseModel responseModel =
                 (ProductTaxResponseModel) new ProductTaxResponseModel().fromEntity(entityResponse);
+
+        log.info("Product updated: {}", id);
 
         return ResponseEntity.ok(responseModel);
     }

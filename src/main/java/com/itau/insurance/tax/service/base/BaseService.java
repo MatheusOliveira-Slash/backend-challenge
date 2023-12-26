@@ -2,15 +2,13 @@ package com.itau.insurance.tax.service.base;
 
 import com.itau.insurance.tax.entity.base.BaseEntity;
 import com.itau.insurance.tax.entity.id.base.BaseId;
-import com.itau.insurance.tax.exception.BadRequestException;
+import com.itau.insurance.tax.exception.NotFoundException;
 import com.itau.insurance.tax.repository.base.BaseRepository;
 import lombok.SneakyThrows;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 
-import java.lang.reflect.InvocationTargetException;
-import java.lang.reflect.ParameterizedType;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Map;
@@ -34,6 +32,7 @@ public class BaseService<E extends BaseEntity<I>, I extends BaseId, R extends Ba
         if (!databaseEntity.isPresent()) {
             entity.setInsertedAt(LocalDateTime.now());
         } else {
+            entity.setId(databaseEntity.get().getId());
             entity.setInsertedAt(databaseEntity.get().getInsertedAt() != null ?
                     databaseEntity.get().getInsertedAt() : databaseEntity.get().getUpdatedAt());
         }
@@ -49,7 +48,7 @@ public class BaseService<E extends BaseEntity<I>, I extends BaseId, R extends Ba
             databaseEntity.get().patch(updates);
             return repository.save(databaseEntity.get());
         } else {
-            throw new BadRequestException("Registro não encontrado", "");
+            throw new NotFoundException("Registro não encontrado", id.toString());
         }
     }
 

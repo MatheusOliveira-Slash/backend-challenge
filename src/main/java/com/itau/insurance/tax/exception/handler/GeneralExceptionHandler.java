@@ -23,14 +23,20 @@ class GeneralExceptionHandler {
 
     @ExceptionHandler(value = BadRequestException.class)
     public ResponseEntity<MessageError> badRequestExceptionHandler(BadRequestException e){
+
+        log.error("Validation error {} with key {}", e.getMessage(), e.getKey());
+
         return new ResponseEntity<>(
                 new MessageError(e.getMessage(), e.getKey()), HttpStatus.BAD_REQUEST);
     }
 
     @ExceptionHandler(value = NotFoundException.class)
     public ResponseEntity<MessageError> notFoundExceptionHandler(NotFoundException e){
+
+        log.error("Record not found for key {}", e.getKey());
+
         return new ResponseEntity<>(
-                new MessageError(e.getMessage()), HttpStatus.NOT_FOUND);
+                new MessageError(e.getMessage(), e.getKey()), HttpStatus.NOT_FOUND);
     }
 
     @ExceptionHandler

@@ -45,10 +45,10 @@ public class ProductTaxEntity extends BaseEntity<ProductTaxId> {
                 this.name = (String) updates.get("nome");
 
             if (updates.containsKey("preco_base"))
-                this.baseValue = BigDecimal.valueOf((Float) updates.get("preco_base"));
+                this.baseValue = BigDecimal.valueOf((Double) updates.get("preco_base"));
 
             if (updates.containsKey("categoria"))
-                this.category = AssuranceCategoryTaxDomain.valueOf((String) updates.get("categoria"));
+                this.category = AssuranceCategoryTaxDomain.fromValue((String) updates.get("categoria"));
 
         } catch (Exception e){
             throw new BadRequestException("Erro ao parsear atualizações", "");

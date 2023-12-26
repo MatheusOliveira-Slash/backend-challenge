@@ -6,6 +6,7 @@ import com.itau.insurance.tax.entity.ProductTaxEntity;
 import com.itau.insurance.tax.model.base.BaseModel;
 import jakarta.validation.constraints.DecimalMin;
 import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -25,8 +26,9 @@ public class ProductTaxModel implements BaseModel<ProductTaxEntity> {
     @NotBlank
     private String categoria;
 
+    @DecimalMin(value = "0.0", message = "preco_base deve ser maior que zero")
+    @NotNull(message = "preco_base não pode ser nulo")
     @JsonProperty("preco_base")
-    @DecimalMin("0.0")
     private BigDecimal precoBase;
 
     public ProductTaxEntity toEntity() {
