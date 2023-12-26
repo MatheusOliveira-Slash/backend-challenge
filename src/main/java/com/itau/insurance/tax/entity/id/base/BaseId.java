@@ -1,4 +1,6 @@
 package com.itau.insurance.tax.entity.id.base;
 
-public class BaseId {
-}
+import jakarta.persistence.Embeddable;
+
+@Embeddable
+public abstract class BaseId {}

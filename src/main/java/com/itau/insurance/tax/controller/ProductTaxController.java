@@ -3,6 +3,7 @@ package com.itau.insurance.tax.controller;
 import com.itau.insurance.tax.entity.ProductTaxEntity;
 import com.itau.insurance.tax.model.ProductTaxModel;
 import com.itau.insurance.tax.model.ProductTaxResponseModel;
+import com.itau.insurance.tax.model.base.BaseModel;
 import com.itau.insurance.tax.service.ProductTaxService;
 import jakarta.validation.Valid;
 import lombok.extern.slf4j.Slf4j;
@@ -24,7 +25,7 @@ public class ProductTaxController {
     }
 
     @PostMapping
-    public ResponseEntity<ProductTaxResponseModel> post(@Valid @RequestBody ProductTaxModel requestBody){
+    public ResponseEntity<BaseModel> post(@Valid @RequestBody ProductTaxModel requestBody){
 
         log.info("Posting new product");
 

@@ -1,7 +1,9 @@
 package com.itau.insurance.tax.entity;
 
-import com.itau.insurance.tax.domain.AssuranceCategoryDomain;
+import com.itau.insurance.tax.domain.AssuranceCategoryTaxDomain;
 import com.itau.insurance.tax.entity.base.BaseEntity;
+import com.itau.insurance.tax.entity.id.ProductTaxId;
+import jakarta.persistence.Entity;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -11,17 +13,26 @@ import java.math.BigDecimal;
 
 @Getter
 @Setter
+@Entity
 @NoArgsConstructor
 @AllArgsConstructor
-public class ProductTaxEntity extends BaseEntity {
+public class ProductTaxEntity extends BaseEntity<ProductTaxId> {
 
-    private String id;
+    private ProductTaxId id = new ProductTaxId();
 
     private String name;
 
-    private AssuranceCategoryDomain category;
+    private AssuranceCategoryTaxDomain category;
 
-    private BigDecimal base_value;
+    private BigDecimal baseValue;
 
-    private BigDecimal actual_value;
+    private BigDecimal actualValue;
+
+    public BigDecimal getActualValue(){
+
+        if(actualValue != null)
+            return actualValue;
+
+        return category.calculateActualValue(baseValue);
+    }
 }

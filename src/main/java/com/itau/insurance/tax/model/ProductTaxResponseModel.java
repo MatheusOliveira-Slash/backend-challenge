@@ -1,14 +1,16 @@
 package com.itau.insurance.tax.model;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
-import com.itau.insurance.tax.domain.AssuranceCategoryDomain;
+import com.itau.insurance.tax.domain.AssuranceCategoryTaxDomain;
 import com.itau.insurance.tax.entity.ProductTaxEntity;
+import com.itau.insurance.tax.entity.id.ProductTaxId;
 import com.itau.insurance.tax.model.base.BaseModel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import java.math.BigDecimal;
+import java.util.UUID;
 
 @Getter
 @Setter
@@ -17,17 +19,18 @@ public class ProductTaxResponseModel extends ProductTaxModel {
 
     private String id;
 
-    private BigDecimal preco_tarifado;
+    @JsonProperty("preco_tarifado")
+    private BigDecimal precoTarifado;
 
     @Override
     public ProductTaxEntity toEntity() {
         ProductTaxEntity entity =  new ProductTaxEntity();
 
         entity.setName(getNome());
-        entity.setBase_value(getPreco_base());
-        entity.setCategory(AssuranceCategoryDomain.fromValue(getCategoria()));
-        entity.setId(getId());
-        entity.setActual_value(getPreco_tarifado());
+        entity.setBaseValue(getPrecoBase());
+        entity.setId(new ProductTaxId(UUID.fromString(getId())));
+        entity.setActualValue(getPrecoTarifado());
+        entity.setCategory(AssuranceCategoryTaxDomain.fromValue(getCategoria()));
 
         return entity;
     }
@@ -37,8 +40,8 @@ public class ProductTaxResponseModel extends ProductTaxModel {
 
         ProductTaxResponseModel response = (ProductTaxResponseModel) super.fromEntity(entity);
 
-        response.setId(entity.getId());
-        response.setPreco_tarifado(entity.getActual_value());
+        response.setId(entity.getId().getId().toString());
+        response.setPrecoTarifado(entity.getActualValue());
 
         return response;
     }

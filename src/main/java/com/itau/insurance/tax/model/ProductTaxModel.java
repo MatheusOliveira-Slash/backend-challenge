@@ -1,11 +1,12 @@
 package com.itau.insurance.tax.model;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
-import com.itau.insurance.tax.domain.AssuranceCategoryDomain;
+import com.itau.insurance.tax.domain.AssuranceCategoryTaxDomain;
 import com.itau.insurance.tax.entity.ProductTaxEntity;
 import com.itau.insurance.tax.model.base.BaseModel;
 import jakarta.validation.constraints.DecimalMin;
 import jakarta.validation.constraints.NotBlank;
+import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -15,6 +16,7 @@ import java.math.BigDecimal;
 @Getter
 @Setter
 @NoArgsConstructor
+@AllArgsConstructor
 public class ProductTaxModel implements BaseModel<ProductTaxEntity> {
 
     @NotBlank
@@ -23,15 +25,16 @@ public class ProductTaxModel implements BaseModel<ProductTaxEntity> {
     @NotBlank
     private String categoria;
 
+    @JsonProperty("preco_base")
     @DecimalMin("0.0")
-    private BigDecimal preco_base;
+    private BigDecimal precoBase;
 
     public ProductTaxEntity toEntity() {
         ProductTaxEntity entity =  new ProductTaxEntity();
 
         entity.setName(getNome());
-        entity.setBase_value(getPreco_base());
-        entity.setCategory(AssuranceCategoryDomain.fromValue(getCategoria()));
+        entity.setBaseValue(getPrecoBase());
+        entity.setCategory(AssuranceCategoryTaxDomain.fromValue(getCategoria()));
 
         return entity;
     }
@@ -39,7 +42,7 @@ public class ProductTaxModel implements BaseModel<ProductTaxEntity> {
     public BaseModel fromEntity(ProductTaxEntity entity) {
 
         setNome(entity.getName());
-        setPreco_base(entity.getBase_value());
+        setPrecoBase(entity.getBaseValue());
         setCategoria(entity.getCategory().getValue());
 
         return this;

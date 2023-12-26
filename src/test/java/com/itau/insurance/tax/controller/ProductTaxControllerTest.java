@@ -5,6 +5,8 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 
+import java.math.BigDecimal;
+
 @SpringBootTest
 public class ProductTaxControllerTest {
 
@@ -13,7 +15,7 @@ public class ProductTaxControllerTest {
 
     @Test
     public void shouldReturn201CreatedWithValidId(){
-        controller.post(new ProductTaxModel());
+        controller.post(new ProductTaxModel("asd", "AUTO", BigDecimal.valueOf(50)));
     }
 
 }

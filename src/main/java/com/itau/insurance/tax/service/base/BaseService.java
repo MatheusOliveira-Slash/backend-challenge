@@ -3,17 +3,19 @@ package com.itau.insurance.tax.service.base;
 import com.itau.insurance.tax.entity.base.BaseEntity;
 import com.itau.insurance.tax.entity.id.base.BaseId;
 import com.itau.insurance.tax.repository.base.BaseRepository;
-import lombok.AllArgsConstructor;
-import lombok.NoArgsConstructor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Service;
 
-public abstract class BaseService<T extends BaseEntity, I extends BaseId, R extends BaseRepository<T, I>> {
+public class BaseService<E extends BaseEntity<I>, I extends BaseId, R extends BaseRepository<E, I>> {
+
+    protected final Logger logger = LoggerFactory.getLogger(this.getClass());
+
+    @Autowired
     protected R repository;
 
-    public T post(T requestBody){
+    public E post(E requestBody){
         return repository.save(requestBody);
     }
+
 }
