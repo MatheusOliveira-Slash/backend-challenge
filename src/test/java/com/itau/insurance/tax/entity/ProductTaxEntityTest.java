@@ -37,6 +37,20 @@ public class ProductTaxEntityTest {
     }
 
     @Test
+    public void patchShouldUpdateFieldsPartially() {
+        ProductTaxEntity original = getProductTaxEntity();
+        ProductTaxEntity updated = new ProductTaxEntity();
+
+        updated.setBaseValue(BigDecimal.valueOf(200.0));
+
+        original.patch(updated);
+
+        assertEquals(getProductTaxEntity().getName(), original.getName());
+        assertEquals(getProductTaxEntity().getCategory(), original.getCategory());
+        assertEquals(BigDecimal.valueOf(200.0), original.getBaseValue());
+    }
+
+    @Test
     public void patchShouldThrowBadRequestExceptionWhenParsingFails() {
         ProductTaxEntity original = getProductTaxEntity();
 

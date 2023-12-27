@@ -1,8 +1,8 @@
 package com.itau.insurance.tax.controller;
 
-import com.itau.insurance.tax.domain.AssuranceCategoryTaxDomain;
 import com.itau.insurance.tax.entity.ProductTaxEntity;
 import com.itau.insurance.tax.entity.id.ProductTaxId;
+import com.itau.insurance.tax.exception.BadRequestException;
 import com.itau.insurance.tax.exception.NotFoundException;
 import com.itau.insurance.tax.model.ProductTaxModel;
 import com.itau.insurance.tax.model.ProductTaxResponseModel;
@@ -15,14 +15,22 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 
-import java.math.BigDecimal;
 import java.util.Arrays;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
-import java.util.UUID;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static com.itau.insurance.tax.Asserts.assertProductTaxResponseModel;
+import static com.itau.insurance.tax.Mocks.getProductTaxEntity;
+import static com.itau.insurance.tax.Mocks.getProductTaxId;
+import static com.itau.insurance.tax.Mocks.getProductTaxModel;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 @SpringBootTest
@@ -45,18 +53,20 @@ public class ProductTaxControllerTest {
         assertNotNull(response.getBody());
         assertEquals(2, response.getBody().size());
         assertTrue(response.getBody().get(0) instanceof ProductTaxResponseModel);
+        assertProductTaxResponseModel((ProductTaxResponseModel) response.getBody().get(0));
     }
 
     @Test
     public void getShouldReturnProductById() {
         ProductTaxId id = getProductTaxId();
-        when(service.findById(id)).thenReturn(Optional.of(getProductTaxEntity()));
+        when(service.findById(any())).thenReturn(Optional.of(getProductTaxEntity()));
 
         ResponseEntity<BaseModel> response = controller.get(id.getId().toString());
 
         assertEquals(HttpStatus.OK, response.getStatusCode());
         assertNotNull(response.getBody());
         assertTrue(response.getBody() instanceof ProductTaxResponseModel);
+        assertProductTaxResponseModel((ProductTaxResponseModel) response.getBody());
     }
 
     @Test
@@ -70,25 +80,55 @@ public class ProductTaxControllerTest {
     @Test
     public void postShouldCreateNewProduct() {
         ProductTaxModel requestBody = getProductTaxModel();
-        when(service.post(any(ProductTaxEntity.class))).thenReturn(getProductTaxEntity());
+        when(service.post(any())).thenReturn(getProductTaxEntity());
 
         ResponseEntity<BaseModel> response = controller.post(requestBody);
 
         assertEquals(HttpStatus.CREATED, response.getStatusCode());
         assertNotNull(response.getBody());
         assertTrue(response.getBody() instanceof ProductTaxResponseModel);
+        assertProductTaxResponseModel((ProductTaxResponseModel) response.getBody());
     }
 
-    private ProductTaxId getProductTaxId() {
-        return new ProductTaxId(UUID.randomUUID().toString());
+    @Test
+    public void putShouldUpdateProduct() {
+        ProductTaxModel requestBody = getProductTaxModel();
+        when(service.insertOrUpdate(any(), any())).thenReturn(getProductTaxEntity());
+
+        ResponseEntity<BaseModel> response = controller.put(getProductTaxId().getId().toString(), requestBody);
+
+        assertEquals(HttpStatus.OK, response.getStatusCode());
+        assertNotNull(response.getBody());
+        verify(service).insertOrUpdate(any(), any());
+        assertTrue(response.getBody() instanceof ProductTaxResponseModel);
+        assertProductTaxResponseModel((ProductTaxResponseModel) response.getBody());
     }
 
-    private ProductTaxEntity getProductTaxEntity() {
-        return new ProductTaxEntity(getProductTaxId(), "Test Product", AssuranceCategoryTaxDomain.LIFE,
-                BigDecimal.valueOf(100.0), null);
+    @Test
+    public void patchShouldPartiallyUpdateProduct() {
+
+        Map<String, Object> updates = new HashMap<>();
+        updates.put("nome", "New Name");
+
+        when(service.update(any(), any())).thenReturn(getProductTaxEntity());
+
+        ResponseEntity<BaseModel> response = controller.patch(getProductTaxId().getId().toString(), updates);
+
+        assertEquals(HttpStatus.OK, response.getStatusCode());
+        assertNotNull(response.getBody());
+        verify(service).update(any(), any());
+        assertTrue(response.getBody() instanceof ProductTaxResponseModel);
+        assertProductTaxResponseModel((ProductTaxResponseModel) response.getBody());
+
     }
 
-    private ProductTaxModel getProductTaxModel() {
-        return (ProductTaxModel) new ProductTaxModel().fromEntity(getProductTaxEntity());
+    @Test
+    public void patchShouldThrowBadRequestExceptionOnInvalidUpdates() {
+        Map<String, Object> invalidUpdates = new HashMap<>();
+        invalidUpdates.put("nome", "New Name");
+        invalidUpdates.put("preco_base", "Invalid Price");
+
+        assertThrows(BadRequestException.class, () -> controller.patch(getProductTaxId().getId().toString(), invalidUpdates));
     }
+
 }

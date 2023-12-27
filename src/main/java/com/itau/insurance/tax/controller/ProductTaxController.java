@@ -125,8 +125,6 @@ public class ProductTaxController {
             throw new BadRequestException("Erro ao gerar objeto para atualização", "");
         }
 
-
-
     }
 
 
