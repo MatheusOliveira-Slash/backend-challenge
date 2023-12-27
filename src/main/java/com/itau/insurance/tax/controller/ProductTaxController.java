@@ -1,7 +1,9 @@
 package com.itau.insurance.tax.controller;
 
+import com.itau.insurance.tax.domain.AssuranceCategoryTaxDomain;
 import com.itau.insurance.tax.entity.ProductTaxEntity;
 import com.itau.insurance.tax.entity.id.ProductTaxId;
+import com.itau.insurance.tax.exception.BadRequestException;
 import com.itau.insurance.tax.exception.NotFoundException;
 import com.itau.insurance.tax.model.ProductTaxModel;
 import com.itau.insurance.tax.model.ProductTaxResponseModel;
@@ -14,6 +16,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.math.BigDecimal;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
@@ -90,13 +93,41 @@ public class ProductTaxController {
                                            @RequestBody Map<String, Object> updates) {
         log.info("Partially updating product with id: {}", id);
 
-        ProductTaxEntity entityResponse = service.update(new ProductTaxId(id), updates);
+        ProductTaxModel productTaxModel = getModelFromMap(updates);
+
+        ProductTaxEntity entityResponse = service.update(new ProductTaxId(id), productTaxModel.toEntity());
         ProductTaxResponseModel responseModel =
                 (ProductTaxResponseModel) new ProductTaxResponseModel().fromEntity(entityResponse);
 
         log.info("Product updated: {}", id);
 
         return ResponseEntity.ok(responseModel);
+    }
+
+    @SneakyThrows
+    private ProductTaxModel getModelFromMap(Map<String, Object> updates) {
+
+        try {
+
+            ProductTaxModel productTaxModel = new ProductTaxModel();
+
+            if (updates.containsKey("nome") && !String.valueOf(updates.get("nome")).isBlank())
+                productTaxModel.setNome((String) updates.get("nome"));
+
+            if (updates.containsKey("preco_base") && (Double) updates.get("preco_base") > 0)
+                productTaxModel.setPrecoBase(BigDecimal.valueOf((Double) updates.get("preco_base")));
+
+            if (updates.containsKey("categoria"))
+                productTaxModel.setCategoria((String) updates.get("categoria"));
+
+            return productTaxModel;
+
+        } catch (Exception e){
+            throw new BadRequestException("Erro ao gerar objeto para atualização", "");
+        }
+
+
+
     }
 
 

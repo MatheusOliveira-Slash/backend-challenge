@@ -21,5 +21,5 @@ public abstract class BaseEntity<I extends BaseId> {
     private LocalDateTime updatedAt = LocalDateTime.now();
 
 
-    public abstract void patch(Map<String, Object> databaseEntity);
+    public abstract void patch(BaseEntity databaseEntity);
 }

@@ -4,6 +4,7 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import com.itau.insurance.tax.domain.AssuranceCategoryTaxDomain;
 import com.itau.insurance.tax.entity.ProductTaxEntity;
 import com.itau.insurance.tax.model.base.BaseModel;
+import jakarta.validation.Valid;
 import jakarta.validation.constraints.DecimalMin;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
@@ -36,7 +37,8 @@ public class ProductTaxModel implements BaseModel<ProductTaxEntity> {
 
         entity.setName(getNome());
         entity.setBaseValue(getPrecoBase());
-        entity.setCategory(AssuranceCategoryTaxDomain.fromValue(getCategoria()));
+        if(getCategoria() != null)
+            entity.setCategory(AssuranceCategoryTaxDomain.fromValue(getCategoria()));
 
         return entity;
     }
@@ -49,4 +51,5 @@ public class ProductTaxModel implements BaseModel<ProductTaxEntity> {
 
         return this;
     }
+
 }

@@ -4,6 +4,7 @@ import com.itau.insurance.tax.entity.base.BaseEntity;
 import com.itau.insurance.tax.entity.id.base.BaseId;
 import com.itau.insurance.tax.exception.NotFoundException;
 import com.itau.insurance.tax.repository.base.BaseRepository;
+import jakarta.validation.Valid;
 import lombok.SneakyThrows;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -11,7 +12,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 
 import java.time.LocalDateTime;
 import java.util.List;
-import java.util.Map;
 import java.util.Optional;
 
 public class BaseService<E extends BaseEntity<I>, I extends BaseId, R extends BaseRepository<E, I>> {
@@ -42,10 +42,10 @@ public class BaseService<E extends BaseEntity<I>, I extends BaseId, R extends Ba
     }
 
     @SneakyThrows
-    public E update(I id, Map<String, Object> updates) {
+    public E update(I id, @Valid E requestEntity) {
         Optional<E> databaseEntity = repository.findById(id);
         if (databaseEntity.isPresent()) {
-            databaseEntity.get().patch(updates);
+            databaseEntity.get().patch(requestEntity);
             return repository.save(databaseEntity.get());
         } else {
             throw new NotFoundException("Registro não encontrado", id.toString());

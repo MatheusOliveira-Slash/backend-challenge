@@ -37,18 +37,20 @@ public class ProductTaxEntity extends BaseEntity<ProductTaxId> {
 
     @SneakyThrows
     @Override
-    public void patch(Map<String, Object> updates) {
+    public void patch(BaseEntity requestEntity) {
+
+        ProductTaxEntity request = (ProductTaxEntity) requestEntity;
 
         try {
 
-            if (updates.containsKey("nome"))
-                this.name = (String) updates.get("nome");
+            if(request.getName() != null)
+                this.setName(request.getName());
 
-            if (updates.containsKey("preco_base"))
-                this.baseValue = BigDecimal.valueOf((Double) updates.get("preco_base"));
+            if(request.getCategory() != null)
+                this.setCategory(request.getCategory());
 
-            if (updates.containsKey("categoria"))
-                this.category = AssuranceCategoryTaxDomain.fromValue((String) updates.get("categoria"));
+            if(request.getBaseValue() != null)
+                this.setBaseValue(request.getBaseValue());
 
         } catch (Exception e){
             throw new BadRequestException("Erro ao parsear atualizações", "");
