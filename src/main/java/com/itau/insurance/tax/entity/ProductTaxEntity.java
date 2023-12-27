@@ -38,9 +38,9 @@ public class ProductTaxEntity extends BaseEntity<ProductTaxId> {
     @Override
     public void patch(BaseEntity requestEntity) {
 
-        ProductTaxEntity request = (ProductTaxEntity) requestEntity;
-
         try {
+
+            ProductTaxEntity request = (ProductTaxEntity) requestEntity;
 
             if(request.getName() != null)
                 this.setName(request.getName());
