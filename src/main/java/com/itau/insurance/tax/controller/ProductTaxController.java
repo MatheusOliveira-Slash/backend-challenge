@@ -1,6 +1,5 @@
 package com.itau.insurance.tax.controller;
 
-import com.itau.insurance.tax.domain.AssuranceCategoryTaxDomain;
 import com.itau.insurance.tax.entity.ProductTaxEntity;
 import com.itau.insurance.tax.entity.id.ProductTaxId;
 import com.itau.insurance.tax.exception.BadRequestException;
