@@ -23,13 +23,13 @@ Toda a aplicação esta em inglês porém o README e os retornos para o usuário
 
 Controller: Camada de exposição de rota assim como orquestrações para validação do request e construção do response.
 
-Domain: Segregação da regra de negocio através de um ENUM. O uso do ENUM permite a utilização do Strategy Pattern o que deixa o calculo do valor tarifado inerente ao ENUM.
+Domain: Segregação do calculo de tarifa através de um ENUM. O uso do ENUM permite a utilização do Strategy Pattern o que deixa o calculo do valor tarifado inerente ao ENUM passado no request.
 
-Entity: Contrato que faz relação com a camada de persistência. Seguindo um modelo rico, possui também a chamada de método para calculo do valor tarifado.
+Entity: Contrato que faz relação com a camada de persistência. Seguindo um modelo rico, possui também a chamada de método para calculo do valor tarifado, assim como tem controle sobre a própria atualização durante o patch.
 
 Exception: Segregado toda a parte de exception, incluindo exceptions personalizadas, handlers e o contrato de erro que é enviado ao usuário. MessageError se trata de modelo anemico.
 
-Model: Contrato de entrada ou saída da aplicação. Seguindo um modelo rico, possui também as validações de request.
+Model: Contrato de entrada ou saída da aplicação. Seguindo um modelo rico, possui também as validações de request atráves das notações Spring.
 
 Repository: Expõe métodos para acesso para camada de persistência.
 
