@@ -1,137 +1,64 @@
-# Desafio Produtos de Seguros 🚀
+# Itaú - Backend Challenge - insurance-tax-api
 
-## Resumo
-* [Desafio](#desafio)
-    * [Pontos que daremos mais atenção](#pontos_atencao)
-    * [Pontos que não iremos avaliar](#pontos_sem_avaliacao)
-    * [Observações importantes](#observacoes)
-* [Sobre a documentação](#about_docs)
-    * [Como esperamos receber sua solução](#como_esperamos_receber)
-* [Dicas](#dicas)
+Projeto teste para Itaú, o mesmo tem como intuito avaliar o desenvolvedor ao realizar a construção de uma API.
 
-### <a name="desafio">Desafio</a>
-Você foi designado para construir uma API REST capaz de calcular o preço tarifado de um produto de seguros a partir do preço base informado.
+### Introdução
 
-O cálculo deve ocorrer durante a criação ou alteração do produto com base em sua tributação.
+A aplicação tem como objetivo expor endpoints para realização do cadastro de produtos de seguros, contendo os dados: Nome, categoria de seguro, valor base e valor tarifado. Após cada cadastrado é disponibiizado um ID para atualização e consulta do registro.
 
-Para isto é necessário considerar as informações abaixo.
+Os dados são salvos em um banco em memória H2, o mesmo não persiste os dados após o fim da aplicação.
 
-Todo produto deve ter os atributos:
-- ID
-- Nome
-- Categoria
-- Preço Base
-- Preço Tarifado
+A escolha do banco, dado o desafio técnico, se deve a praticidade da implementação. Em uma situação real considerariamos as necessidades de negocio e utilizariamos o Teorema CAP para nos auxiliar na decisão.
 
-**Exemplo de Requisição**
+Toda a aplicação esta em inglês porém o README e os retornos para o usuário foram mantidos em português.
 
-```json
-{
-    "nome": "Seguro de Vida Individual",
-    "categoria": "VIDA",
-    "preco_base": 100.00
-}
-```
+### Decisões do Projeto
 
-**Exemplo de Resposta**
+* Spring Boot: Escolhido por ser uma framework amplamente utilizado, proporcionando facilidade na configuração, desenvolvimento e manutenção.
+* H2 Database: Utilizado como banco de dados em memória para simplificar o setup e execução dos testes.
+* Clean Architecture: Adotada para garantir uma estrutura modular e desacoplada, facilitando a manutenção e testabilidade do código.
+* Lombok: Utilizado para reduzir a verbosidade do código, gerando automaticamente getters, setters e outros métodos padrão.
 
-```json
-{
-    "id": "8cfb5eb2-fd93-4322-bb74-c82f27c95a47",
-    "nome": "Seguro de Vida Individual",
-    "categoria": "VIDA",
-    "preco_base": 100.00,
-    "preco_tarifado": 106.00
-}
-```
+### Descrição das pacotes
 
-Após o cálculo é necessário salvar ou atualizar o produto em uma base de dados de sua preferência (SQL ou NoSQL, podendo ser inclusive um banco de dados em memória como H2 ou HSQLDB).
+Controller: Camada de exposição de rota assim como orquestrações para validação do request e construção do response.
 
-O preço tarifado deve ser calculado pela API e ignorado caso seja enviado através da requisição, ou seja, caso o corpo da requisição contenha o campo preço tarifado, o mesmo deve ser ignorado.
+Domain: Segregação da regra de negocio através de um ENUM. O uso do ENUM permite a utilização do Strategy Pattern o que deixa o calculo do valor tarifado inerente ao ENUM.
 
-Os produtos de seguros podem pertencer as seguintes categorias:
-- VIDA
-- AUTO
-- VIAGEM
-- RESIDENCIAL
-- PATRIMONIAL
-  
-Os impostos devem ser aplicados da seguinte forma:
+Entity: Contrato que faz relação com a camada de persistência. Seguindo um modelo rico, possui também a chamada de método para calculo do valor tarifado.
 
+Exception: Segregado toda a parte de exception, incluindo exceptions personalizadas, handlers e o contrato de erro que é enviado ao usuário. MessageError se trata de modelo anemico.
 
-| **Categoria** | **Imposto sobre Operação Finaneira (IOF)** | **Programa de Integração Social (PIS)** | **Contribuição para o Financiamento da Seguridade Social (COFINS)** |
-|---------------|--------------------------------------------|-----------------------------------------|----------------------------------------------------------------|
-| VIDA          | 1%                                         | 2.2%                                      | Não há                                                          |
-| AUTO          | 5.5%                                       | 4%                                      | 1%                                                             |
-| VIAGEM        | 2%                                         | 4%                                      | 1%                                                             |
-| RESIDENCIAL   | 4%                                         | Não há                                | 3%                                                             |
-| PATRIMONIAL   | 5%                                         | 3%                                      | Não há                                                           |
+Model: Contrato de entrada ou saída da aplicação. Seguindo um modelo rico, possui também as validações de request.
 
+Repository: Expõe métodos para acesso para camada de persistência.
 
-**Fórmula**
+Service: Construído com generics para atender o comportamento padrão de um CRUD (DELETE não foi implementado). Esta forma permite a introdução de novas services sem a necessidade de replicar código, apenas criando novos contratos e implementando as Bases Service, Repository, Entity e ID.
 
-**Preço Tarifado** = Preço Base + (Preço Base x IOF) + (Preço Base x PIS) + (Preço Base x COFINS)
+### Testes
 
-**Exemplos**
+* Mocks - Tem o intuito encapsular as classes de contrato mockadas para realização dos testes
+* Asserts - Encapsula o assert das classes de contrato utilizando a classe Mocks como base de comparação.
+* Integration - O pacote integration executa os testes sem o uso do Mockito, testando as conexões ao longo da execução e insere os dados no banco. Posterior a cada método cada registro criado é excluído 
+* Demais pacotes seguem o módelo de teste de unidade, utilizando Mockito para dependências externas a classe, quando necessário.
 
-Seguro de Vida com preço informado de **R$ 100.00**
+## Observação importante
 
-**Preço tarifado**: 100.00 + (100.00 x 0.01) + (100.00 x 0.022) + (100.00 x 0.00) = R$ 103,20
+Dado a solicitação não há regra para duplicidade dos registros nos bancos mas salientando que ao fazer isso fugimos das regras de normalização deixando o banco sujeito a problemas, tais quais:
+* Redundância
+* Uso de espaço de desnecessário
+* Registros duplicados requerem atualizações multiplas
+* Consultas incosistentes para consultas que não façam uso do id
 
-Seguro Auto com preço informado de **R$ 50.00**
+## Construído com
 
-**Preço tarifado**: 50.00 + (50.00 x 0.055) + (50.00 x 0.04) + (50.00 x 0.01) = R$ 55,25
+* [Maven](https://maven.apache.org/) - Gerenciador de Dependências
+* [Spring Boot](https://spring.io/projects/spring-boot/) - Framework Web e Data Access
+* [Logback](https://logback.qos.ch/) - Framework gerenciador de logs
+* [Lombok](https://projectlombok.org/) - Lib para automação de "boiler plate"
+* [H2 Database](https://www.h2database.com/html/main.html) - Gerenciador de bases relacionais em memória
+* [Mockito](https://site.mockito.org/) - Framework de mock para teste de código 
 
-### <a name="pontos_atencao">Pontos que daremos mais atenção</a>
-- Testes de unidade e integração
-- Cobertura de testes (Code Coverage)
-- Arquitetura utilizada
-- Abstração, acoplamento, extensibilidade e coesão
-- Profundidade na utilização de Design Patterns
-- Clean Architecture
-- Clean Code
-- SOLID
-- Documentação da Solução no README.md
-- Observabilidade (métricas, traces e logs)
+## Autores
 
-### <a name="pontos_sem_avaliacao">Pontos que não iremos avaliar</a>
-- Dockerfile
-- Scripts CI/CD
-- Collections do Postman, Insomnia ou qualquer outra ferramenta para execução
-
-## <a name="about_docs">Sobre a documentação</a>
-Nesta etapa do processo seletivo queremos entender as decisões por trás do código, portanto é fundamental que o README.md tenha algumas informações referentes a sua solução.
-
-Algumas dicas do que esperamos ver são:
-- Instruções básicas de como executar o projeto
-- Detalhes sobre a solução, gostaríamos de saber qual foi o seu racional nas decisões
-- Caso algo não esteja claro e você precisou assumir alguma premissa, quais foram e o que te motivou a tomar essas decisões
-
-### <a name="como_esperamos_receber">Como esperamos receber sua solução</a>
-Esta etapa é eliminatória, e por isso esperamos que o código reflita essa importância.
-
-Se tiver algum imprevisto, dúvida ou problema, por favor entre em contato com a gente, estamos aqui para ajudar.
-
-Atualmente trabalhamos com a stack Java/Spring, porém você pode utilizar a tecnologia de sua preferência.
-
-Para candidatos externos nos envie o link de um repositório público com a sua solução e para candidatos internos o projeto em formato .zip
-
-### <a name="observacoes">Observações importantes</a>
-
-Não é necessário parametrizar os impostos em arquivos de configuração ou persisti-los em base de dados.
-Os campos a serem persistidos devem ser somente os informados no <a name="desafio">desafio</a>.
-
-## <a name="dicas">Dicas</a>
-
-Aqui vão algumas dicas que podem ser úteis.
-
-### <a name="testes">Testes</a>
-Como item opcional de leitura, deixamos este artigo rápido sobre testes [Testing Strategies in a Microservice Architecture](https://martinfowler.com/articles/microservice-testing/).
-
-Nele é possível ver a diferença entre os principais tipos de teste.
-
-<img src="assets/img/piramide.png" alt="Piramide" title="Piramide">
-
-Também há um exemplo para cada tipo de teste no artigo que pode ajudar no desafio.
-
-<img src="assets/img/tipos_teste.png" alt="Tipos de Teste" title="Tipos de Teste">
+* **Lucas Vinicius Salviano Rodrigues** - *Desenvolvimento* - [Git Lucas](https://github.com/lucasviniciusrodrigues)
